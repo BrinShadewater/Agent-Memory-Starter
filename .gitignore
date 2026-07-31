@@ -1,0 +1,38 @@
+# The kit ships an EMPTY vault. If you use this repo as your own live vault,
+# these rules stop your actual memories being committed and pushed by accident.
+#
+# Delete this whole block if you are only publishing the kit and keeping your
+# real vault elsewhere (which is the recommended arrangement).
+vault/90_Journal/*.md
+!vault/90_Journal/README.md
+vault/30_Decisions/*.md
+!vault/30_Decisions/README.md
+vault/20_Inbox/*
+!vault/20_Inbox/README.md
+vault/50_Projects/*.md
+!vault/50_Projects/README.md
+
+# Never commit a user model. It is the least portable and most personal file
+# in any memory system.
+vault/10_Rules/working-with-*.md
+
+# Hook state is machine-local and contains live repo paths.
+hook_state/
+*.jsonl
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Personal identifiers used by scripts/check_export_safe.py. Never publish.
+scripts/identifiers.local.txt

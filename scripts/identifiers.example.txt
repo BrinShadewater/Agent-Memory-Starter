@@ -1,0 +1,35 @@
+# Your personal identifiers, one regex per line.
+#
+# Copy this file to `identifiers.local.txt` and replace the examples with your own.
+# That file is gitignored and never ships — which is the whole point: a checker that
+# ships the strings it hunts for publishes them to everyone who clones it.
+#
+# Format:  <regex>  ||  <label shown when it matches>
+# The label is optional. `#` starts a comment.
+#
+# Rules of thumb:
+#   - Use \b word boundaries so short handles don't match inside other words.
+#   - Escape backslashes and dots: C:\\+Users\\+myname  and  myhandle\.dev
+#   - Add anything that identifies you, your machine, or work you have not published.
+#     A name that seems harmless in isolation is often the one that ties two things
+#     together.
+
+# --- machine and account ---------------------------------------------------
+\bmyusername\b                        || OS user profile name
+C:\\+Users\\+myusername               || Windows profile path
+/home/myusername\b                    || Linux/WSL home directory
+
+# --- identity and contact --------------------------------------------------
+\b(?:me|contact)@mydomain\.com        || personal email address
+\bmyhandle\b                          || online handle
+\bMy Real Name\b                      || legal name
+
+# --- private work ----------------------------------------------------------
+github\.com/myaccount/                || account path for private repos
+\bProject Codename\b                  || unpublished project name
+\bmy-private-repo\b                   || private repository name
+
+# --- anything with a naming scheme ------------------------------------------
+# Identifiers that follow a pattern are worth adding even if the specific value
+# changes, because the *scheme* is itself a disclosure.
+\bacct-[0-9a-f]{8}\b                  || internal account identifier

@@ -1,0 +1,13 @@
+# Normalise line endings. This kit is authored on Windows and run on macOS and Linux
+# too; without this, every clone across platforms shows spurious whole-file diffs and
+# the Python hooks can arrive with CRLF where a shebang expects LF.
+* text=auto eol=lf
+
+*.py   text eol=lf
+*.md   text eol=lf
+*.json text eol=lf
+
+*.png binary
+*.pdf binary
+*.zip binary
+*.skill binary
