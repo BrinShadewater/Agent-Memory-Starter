@@ -57,18 +57,18 @@ The checker deliberately does **not** scan for secrets. Adding a half-good secre
 scanner would imply a guarantee it cannot make; use a real one in CI if you want
 that guarantee.
 
-**Known false positive, so it does not train you to ignore the alarm.** If you add
-your own GitHub handle to `identifiers.local.txt` — which the instructions tell you
-to do — the gate will then block on this repo's *own* URLs, such as the security
-advisory link in `.github/ISSUE_TEMPLATE/config.yml`. Those URLs must contain the
-owner handle to work at all. The patterns are tuned for de-personalising a private
-vault, where the handle should never appear; inside the published repo it
-necessarily does.
+**Your own repo's URLs are exempt, narrowly.** Once you add your GitHub handle to
+`identifiers.local.txt` — which the instructions tell you to do — every link to your
+own repo would otherwise trip the gate, because a URL like
+`github.com/<you>/<repo>/security/advisories/new` has to contain your handle to
+function. The checker derives owner/name from the `origin` remote and exempts matches
+falling inside that exact substring.
 
-Two hits on your own canonical repo URLs are expected. **Anything else is not.**
-Read every hit rather than dismissing the run — a gate you have learned to wave
-through protects nothing, which is the same failure this repo names about alarms
-elsewhere.
+**Only that span is exempt.** A genuine identifier later in the same URL still fails
+the run, and there is a negative control for it: an email inside an exempt self-link
+blocks, while the self-link alone is silent. If you widen this exemption, keep that
+property — a gate you have learned to wave through protects nothing, which is the
+same failure this repo names about alarms elsewhere.
 
 ## Conventions that are decisions, not accidents
 

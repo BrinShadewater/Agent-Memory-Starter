@@ -121,16 +121,57 @@ def candidate_files(staged_only: bool):
         yield p
 
 
-def scan(path: Path, patterns):
+def own_repo_prefixes():
+    """The repository's own canonical URL is not a leak.
+
+    Once you add your GitHub handle to identifiers.local.txt — which the setup
+    instructions tell you to do — every link to this repo trips the check, because
+    a URL like github.com/<you>/<this-repo>/security/advisories/new *has* to contain
+    your handle to work. Those hits are unavoidable and they are noise, and a gate
+    that cries wolf is one people learn to wave through.
+
+    So: derive the repo's own owner/name from the origin remote and treat matches
+    that fall *inside that exact substring* as expected. Deliberately narrow — only
+    the `github.com/<owner>/<repo>` span is exempt, so a genuine identifier later in
+    the same URL still fails the run.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "remote", "get-url", "origin"],
+            cwd=ROOT, capture_output=True, text=True, timeout=5,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return []
+    m = re.search(r"github\.com[:/]+([^/\s]+)/([^/\s]+?)(?:\.git)?$", out.stdout.strip())
+    if not m:
+        return []
+    return [f"github.com/{m.group(1)}/{m.group(2)}"]
+
+
+def _inside_own_url(line: str, start: int, end: int, prefixes) -> bool:
+    for p in prefixes:
+        i = line.find(p)
+        while i >= 0:
+            if start >= i and end <= i + len(p):
+                return True
+            i = line.find(p, i + 1)
+    return False
+
+
+def scan(path: Path, patterns, own_prefixes=()):
     try:
         text = path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return
     for lineno, line in enumerate(text.splitlines(), 1):
         for pattern, why in patterns:
-            m = re.search(pattern, line)
-            if m:
+            # finditer, not search: a line can carry an exempt self-link *and* a
+            # real identifier, and stopping at the first match would hide the second.
+            for m in re.finditer(pattern, line):
+                if _inside_own_url(line, m.start(), m.end(), own_prefixes):
+                    continue
                 yield lineno, m.group(0), why, line.strip()[:100]
+                break
 
 
 def main(argv):
@@ -146,12 +187,14 @@ def main(argv):
         print("No files to scan." if args.staged else "error: no text files found", file=sys.stderr)
         return 0 if args.staged else 2
 
+    own_prefixes = own_repo_prefixes()
+
     hard_hits, soft_hits = [], []
     for f in files:
         rel = f.relative_to(ROOT)
-        for lineno, found, why, ctx in scan(f, hard):
+        for lineno, found, why, ctx in scan(f, hard, own_prefixes):
             hard_hits.append((rel, lineno, found, why, ctx))
-        for lineno, found, why, ctx in scan(f, SOFT):
+        for lineno, found, why, ctx in scan(f, SOFT, own_prefixes):
             soft_hits.append((rel, lineno, found, why, ctx))
 
     for rel, lineno, found, why, ctx in hard_hits:
