@@ -7,7 +7,7 @@ aliases:
   - powershell exit code bitmask
 status: active
 created: 2026-07-27
-updated: 2026-07-28
+updated: 2026-08-06
 privacy: working
 applies_when: >
   Writing or modifying any script that will run on Windows: PowerShell, Python,
@@ -71,6 +71,21 @@ wsl -d Ubuntu -- /home/me/.local/bin/mytool update
 The command fails, and **the pipeline still reports success**, so anything checking the
 exit code concludes the job ran. Run WSL commands from PowerShell rather than git-bash, or
 set `MSYS_NO_PATHCONV=1` for the call — and verify the artifact either way.
+
+### It also mangles git's `rev:path` refspecs
+
+The same conversion breaks git arguments that merely *contain* a colon and a slash:
+
+```
+git rev-parse "$BRANCH:$FILE"
+```
+
+fails with an `ambiguous argument` error naming a Windows-looking path — MSYS rewrote the
+refspec, turning `:` into `;` and `/` into `\`. It only bites on some entries, so a loop
+comparing files across branches **silently skips the affected ones and reports a clean
+result for the rest**, which is worse than failing outright.
+
+Fix is the same: `MSYS_NO_PATHCONV=1` for the loop, or run it from PowerShell.
 
 ## Unquoted variables split on spaces in paths
 

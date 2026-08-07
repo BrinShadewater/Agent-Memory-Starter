@@ -13,6 +13,29 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — new capability or new guidance; existing vaults keep working untouched.
 - **PATCH** — corrections and clarifications, no new behaviour.
 
+## [0.4.0] — 2026-08-06
+
+### Added
+
+- **`verification-discipline.md`: three sections the source vault learned since the kit
+  forked from it.** *The lexical trigger* — any sentence containing an absolute ("nothing",
+  "none", "clean", "empty") must state its coverage in the same breath, keyed off the shape
+  of the claim rather than the operation, because noticing you are making an absence claim
+  is precisely the step that fails. *A correction that does not sweep every copy is not
+  finished* — when a durable fact changes category, grep everywhere it is asserted before
+  calling it fixed; three same-day instances of a fact corrected in one file and left
+  misleading in another. *A verification step written from a note and never run is a
+  guess* — a documented check expecting "84 insertions" returned 96 because a lockfile had
+  drifted; run the check against real breadth before writing it down.
+- **`git-safety.md`: know which push-approval regime you are in.** A pre-push tripwire was
+  tried in the source setup and removed by the human the same day as too annoying. With no
+  hook failing closed, the approval rule is the entire mechanism — and a removed guard must
+  be recorded where the rule lives, or agents stay exactly as casual as the dead tripwire
+  used to permit.
+- **`windows-scripting.md`: MSYS also mangles git `rev:path` refspecs.** `:` becomes `;`,
+  `/` becomes `\`, only on some entries — so a cross-branch comparison loop silently skips
+  the affected files and reports clean, which is worse than failing.
+
 ## [0.3.0] — 2026-08-06
 
 ### Changed

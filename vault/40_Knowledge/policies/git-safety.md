@@ -6,7 +6,7 @@ aliases:
   - where can work hide besides git status
 status: active
 created: 2026-07-27
-updated: 2026-07-27
+updated: 2026-08-06
 privacy: private
 applies_when: >
   About to edit, clean, tidy, reset, or commit in any repository. Also before
@@ -26,6 +26,20 @@ applies_when: >
    branch or worktree first.
 6. **Do not push without explicit approval**, per push.
 7. For non-git folders, make a timestamped backup or ask before broad edits.
+
+## If no push hook enforces rule 6, the chat approval IS the mechanism
+
+A `pre-push` tripwire (push blocked unless a token script had been run) was tried in the
+setup this kit derives from: installed across ten repos, and removed by the human **the
+same day** as too annoying to live with. The middle position — agents bypass the hook,
+the human runs it — died with it.
+
+The lesson is not "never build a push guard". It is: **know which regime you are in.**
+With a hook, a forgotten approval fails closed and the rule can afford to be ceremony.
+Without one, nothing fails closed behind you — the approval rule is the *entire*
+mechanism and has to be treated as load-bearing. If a guard gets removed, write that
+down where the rule lives (this file), because an agent that still believes a tripwire
+exists will be exactly as casual as the tripwire used to permit.
 
 ## Before cleaning a dirty repo
 

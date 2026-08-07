@@ -8,7 +8,7 @@ aliases:
   - check the level you are counting at
 status: active
 created: 2026-07-27
-updated: 2026-07-27
+updated: 2026-08-06
 privacy: working
 applies_when: >
   About to report that something is missing, broken, unversioned, unbacked,
@@ -41,6 +41,22 @@ And separately: **do not infer a mechanism from a single observation.** One disa
 not a policy. One empty directory is not a capability limit. Watch it twice, or find the
 thing that documents it, before building on the theory.
 
+## The lexical trigger
+
+**Any sentence containing an absolute — "nothing", "zero", "none", "no rows", "clean",
+"empty", "missing", "doesn't exist" — must state its coverage in the same breath:** what
+was searched, from which inventory, before the result stands.
+
+Why this exists as a separate trigger when the rule above already covers it: **the rule
+fires only when an agent notices it is making an absence claim, and that noticing is the
+step that fails.** One agent's logged record showed three recurrences across three
+different tools where this discipline was fully loaded and still did not fire, because
+each query looked ordinary. The fix that held: key the trigger off the *shape of the
+claim* (a string-matchable absolute word), not the shape of the operation. A lexical
+trigger needs no judgement call and therefore no meta-audit. Recognition, not rigour, is
+the binding constraint — most rows in the incident log below were caught by the user
+pushing back, not by the discipline firing.
+
 ## The incident log
 
 Each row is a confident claim that turned out to be false, and the check that would have
@@ -60,6 +76,39 @@ stick.
 
 Six of the eight were caught by the user pushing back rather than by any check. That is the
 part worth fixing.
+
+## A correction that does not sweep every copy is not finished
+
+Three instances in one day, all the same shape: a fact was corrected in one place and left
+standing in another, where it went on misleading.
+
+- A retired runtime was swept from the vault, the session-close template, and the skill —
+  but not from a second agent's own config, which for three days was still instructed to
+  maintain the dead service, runbook and all.
+- A false claim ("this repo has no commits yet") was corrected in one orientation file —
+  which even recorded that it had misled an agent — while the project home note kept the
+  false version for days.
+- A new rail was written into the planning note in the morning, and the author wrote a
+  whole session's notes in violation of it the same day, having restated the rail in three
+  files along the way.
+
+The mechanism is always the same: **the thing's category changed, and habits attached to
+the old category came along.** When correcting a durable fact, ask where else it is
+asserted — other agents' configs, project notes, skills, repo docs — and sweep all of them
+in the same pass. Grep the whole tree for the old claim before calling it fixed.
+
+## A verification step written from a note and never run is a guess
+
+A documented pre-update check expected "84 insertions across two files". Run for real, it
+returned three files and 96 insertions — a lockfile had gone dirty in the meantime. The
+protected changes were intact, but the check as written read as "something changed" and
+would have triggered a recovery that was not needed. Same shape twice more the same day: a
+linter carried two latent crashes that only surfaced the first time it was pointed at a
+directory instead of a single file, and a baseline nobody had measured turned out to
+predate the change being blamed for it.
+
+**Run the check you are about to write down, against real breadth, before writing it
+down.**
 
 ## Traps that generalise
 
