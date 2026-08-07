@@ -207,7 +207,23 @@ The orientation file should point at where the rules live and carry only the har
 prohibitions inline. Everything duplicated between it and the vault will drift, and then
 you have two answers.
 
-### Per-agent files drift
+### Per-agent files drift — make one canonical, import it into the other
 
-`AGENTS.md` and `CLAUDE.md` are different files. When a durable project rule changes,
-**update both** — or one agent operates a rule the other has never heard of.
+`AGENTS.md` and `CLAUDE.md` are different files read by different tools, and two
+hand-mirrored copies of the same rules will diverge. The durable fix is structural,
+not disciplinary: **make `AGENTS.md` the canonical, agent-neutral file, and reduce
+`CLAUDE.md` to an import plus a genuinely agent-specific addendum.** Claude Code
+expands a line consisting of an `@`-prefixed path (so a `CLAUDE.md` whose first line
+imports `AGENTS.md`) into the file's full contents at load time — this repo's own
+`CLAUDE.md` is the pattern in miniature. One copy of the rules, nothing to mirror.
+
+The direction matters: tools without an import mechanism read `AGENTS.md` natively,
+so the neutral file must be the canonical one. And if either file still needs a rule
+that applies to one agent only, put it under a clearly-labelled per-agent section at
+the bottom of the canonical file, or in the importing file's addendum — never as a
+second copy.
+
+Two traps: a bare `@`-prefixed token in prose can itself parse as an import, so when
+*writing about* the pattern, keep it inside backticks. And if your other tools do not
+support imports, the old rule stands — when a durable project rule changes, update
+both files, or one agent operates a rule the other has never heard of.

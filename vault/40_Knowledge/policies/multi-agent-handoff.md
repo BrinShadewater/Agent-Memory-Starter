@@ -7,7 +7,7 @@ aliases:
   - agent attribution
 status: active
 created: 2026-07-27
-updated: 2026-07-27
+updated: 2026-08-06
 privacy: working
 applies_when: >
   Starting or finishing work on a project that more than one agent touches, or
@@ -89,13 +89,23 @@ They are different kinds of thing and mixing them makes both less trustworthy.
 
 ## Orientation files are per-agent, and they drift
 
-`AGENTS.md` addresses one tool, `CLAUDE.md` another. They are separate files with
-different content and they will diverge.
+`AGENTS.md` addresses one tool, `CLAUDE.md` another. Kept as two full copies, they
+diverge: one project here reached 199 lines of guidance for one agent with no
+equivalent for the other — including a rule about material that must never be
+published. That gap was closed by hand, and hand-mirroring is why it opened.
 
-**When a durable project rule changes, update both.** One project here reached 199 lines
-of guidance for one agent with no equivalent for the other — including a rule about
-material that must never be published. The gap closed, and it will reopen unless changes
-are mirrored deliberately.
+**The structural fix: one canonical file, imported by the other.** Make `AGENTS.md`
+the canonical, agent-neutral orientation file — per-agent rules go in labelled
+sections at the bottom — and reduce `CLAUDE.md` to an import line plus whatever is
+genuinely Claude-specific. Claude Code expands a line that is just an `@`-prefixed
+path into that file's contents at load time, so the import is mechanical, not an
+instruction the model has to choose to follow. The direction is forced: tools
+without an import mechanism read `AGENTS.md` natively, so the neutral file must be
+the canonical one.
+
+If a tool in your setup supports neither `AGENTS.md` nor imports, the old rule is
+the fallback — **when a durable project rule changes, update both files** — and the
+drift above is what that costs when it slips.
 
 ## Search Anchors
 

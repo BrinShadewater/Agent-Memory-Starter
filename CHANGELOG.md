@@ -13,7 +13,29 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — new capability or new guidance; existing vaults keep working untouched.
 - **PATCH** — corrections and clarifications, no new behaviour.
 
-## [0.2.0] — 2026-07-28
+## [0.3.0] — 2026-08-06
+
+### Changed
+
+- **Orientation-file guidance moved from "update both" to "one canonical file, imported
+  by the other".** `craft/skill-authoring.md` and `vault/40_Knowledge/policies/
+  multi-agent-handoff.md` previously taught that `AGENTS.md` and `CLAUDE.md` are
+  separate files to be hand-mirrored on every durable rule change. Hand-mirroring is
+  how the documented 199-line drift happened in the first place. Both now teach the
+  structural fix: `AGENTS.md` is the canonical, agent-neutral file (per-agent rules in
+  labelled sections), and `CLAUDE.md` shrinks to a Claude Code import line plus a
+  genuinely agent-specific addendum. The import is expanded mechanically at load time,
+  which is a stronger guarantee than a "read the other file" pointer the model has to
+  choose to follow. The direction is forced, not stylistic: tools without an import
+  mechanism read `AGENTS.md` natively, so the neutral file must be canonical. The
+  "update both" rule survives as the stated fallback for tools supporting neither.
+- **This repo's own `CLAUDE.md` now practises the pattern** — an import plus a short
+  addendum, replacing the prose pointer. The change was made only after the same
+  migration ran across the private workspace it derives from and was verified in a
+  live session (import expansion confirmed in loaded context, and by an
+  instructions-loaded audit hook).
+
+
 
 ### Fixed
 
