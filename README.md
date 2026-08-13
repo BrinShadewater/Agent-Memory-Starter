@@ -1,4 +1,4 @@
-# Agent Memory Kit
+# 🗂️ Agent Memory Kit
 
 ![Licence](https://img.shields.io/badge/licence-MIT-blue?style=flat-square) ![Python](https://img.shields.io/badge/python-3.11%2B-3776ab?style=flat-square) ![Claude Skill](https://img.shields.io/badge/Claude-skill-d97757?style=flat-square) ![Shadewater Labs](https://img.shields.io/badge/Shadewater%20Labs-%E2%9A%97%EF%B8%8F-6b4fa2?style=flat-square)
 
@@ -8,7 +8,7 @@ makes them work. For Claude Code, though most of it is portable to any agent tha
 **It ships empty.** No memories, no personal data, no project names. The structure and
 the rules are the product; the contents become yours as you use it.
 
-## What problem this solves
+## 🎯 What problem this solves
 
 Agents forget between sessions. The usual fix is a memory store, and the usual outcome is
 a memory store full of things that are wrong. This kit is mostly about the second problem.
@@ -25,7 +25,7 @@ Three ideas do most of the work:
 
 Everything else is detail hanging off those three.
 
-## What's in it
+## 📦 What's in it
 
 ```
 vault/         The memory structure. Ships empty, with the schema and policies filled in.
@@ -40,7 +40,7 @@ tools/         Pointers to two adjacent tools, and why they are not bundled.
 **Read [`MANIFEST.md`](MANIFEST.md)** for what each file is and — more usefully — what was
 deliberately left out and why.
 
-### The hooks, which are the fastest win
+### 🪝 The hooks, which are the fastest win
 
 | Hook | Event | What it does |
 |---|---|---|
@@ -54,7 +54,7 @@ not `PostCompact`.** `PostCompact` fires after compaction but cannot inject text
 model's context, so a reorientation notice printed from it runs and changes nothing. This
 distinction is the difference between the hook working and the hook being decorative.
 
-## Install
+## ⚙️ Install
 
 See [`INSTALL.md`](INSTALL.md). Short version:
 
@@ -66,7 +66,7 @@ python hooks/install-hooks.py --apply  # backs up settings.json first, merges ad
 Then set two environment variables, copy `vault/` where you want it, and **start a fresh
 session** — a running session's hooks and skills are fixed at start.
 
-## The 10-minute version
+## ⏱️ The 10-minute version
 
 If you adopt nothing else:
 
@@ -76,7 +76,7 @@ If you adopt nothing else:
    It is 80 lines and it is the highest-value file here.
 4. Add `applies_when:` to notes you already have.
 
-## Why the rules appear twice
+## 🔁 Why the rules appear twice
 
 A reviewer noticed that `10_Rules/operating-rules.md` overlaps heavily with what you would
 also put in `AGENTS.md`/`CLAUDE.md`, and that `skills/project-memory/SKILL.md` restates much
@@ -98,7 +98,7 @@ If you cut, cut *detail from the rules files* and let the skill own it — not t
 round. Guidance from Anthropic on newer models points the same direction: keep always-loaded
 context brief, push detail into on-demand skills.
 
-## Releases and versioning
+## 🏷️ Releases and versioning
 
 Tagged releases with a [`CHANGELOG`](CHANGELOG.md), so you can diff between versions rather
 than against a moving `main`. Versions are `MAJOR.MINOR.PATCH` — MAJOR means your vault needs
@@ -108,7 +108,7 @@ Pin to a tag if you have customised heavily. Track `main` if you want fixes as t
 and read the CHANGELOG's *reasoning*, not just its entries: most changes here come from a
 trap that cost someone real time, and whether it applies to you depends on your setup.
 
-## Requirements
+## 📋 Requirements
 
 Python 3.8+, git, and Claude Code (for the hooks and skill; the vault and policies are
 plain markdown and need nothing).
@@ -116,7 +116,7 @@ plain markdown and need nothing).
 Cross-platform. **No bash required** — every script is Python specifically so Windows
 users do not need git-bash, and so no path ever has to cross a shell/Python boundary.
 
-## Licence
+## 📄 Licence
 
 MIT. See [`LICENSE`](LICENSE).
 
@@ -124,7 +124,7 @@ The kit bundles no third-party code. One adjacent tool is *pointed at* rather th
 included, with its own authors and licence noted in [`tools/README.md`](tools/README.md) —
 read that before redistributing anything from this repo alongside it.
 
-## Provenance and honesty
+## 🧾 Provenance and honesty
 
 This is extracted from a working setup, not designed in the abstract. Every rule with a
 war story attached actually happened; the incidents are kept inline **with what went
