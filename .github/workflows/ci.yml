@@ -1,0 +1,31 @@
+name: CI
+
+# The kit ships checks it asks its users to run. Nothing ran them here until now.
+# Stdlib only, so there is nothing to install.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Every script compiles
+        run: python -m compileall -q hooks skills scripts
+      # The reason this repo can be public at all: a kit derived from a private vault
+      # must not carry a real path, handle, or email. Fails on any HARD hit.
+      - name: Export-safety scan
+        run: python scripts/check_export_safe.py
+      # The vault ships empty but its schema, policies and rules are notes too, and
+      # they have to pass the kit's own frontmatter linter or the kit teaches a
+      # contract it does not keep.
+      - name: Lint the shipped vault
+        run: python skills/project-memory/scripts/lint_frontmatter.py vault
