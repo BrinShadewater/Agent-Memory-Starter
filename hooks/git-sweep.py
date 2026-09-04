@@ -98,6 +98,8 @@ def git(repo, *args):
             capture_output=True, text=True, timeout=TIMEOUT,
         )
         return p.returncode, p.stdout.strip()
+    except subprocess.TimeoutExpired:
+        return 124, ""          # distinguishable: the answer is "unknown", not "clean"
     except Exception:
         return 1, ""
 
@@ -128,7 +130,10 @@ def inspect(repo):
     ahead = behind = None
     dirty = 0
     has_commits = True
-    _, sv2 = git(repo, "status", "--porcelain=v2", "--branch")
+    status_rc, sv2 = git(repo, "status", "--porcelain=v2", "--branch")
+    # A timed-out or failed `git status` used to read as "no branch, no upstream,
+    # clean", and flags() then reported a healthy repo as missing its upstream.
+    status_unavailable = status_rc != 0
     for line in sv2.splitlines():
         if not line.strip():
             continue
@@ -190,6 +195,7 @@ def inspect(repo):
         "ahead": ahead,
         "behind": behind,
         "has_commits": has_commits,
+        "status_unavailable": status_unavailable,
         "worktrees": worktrees,
         "stashes": stashes,
         "unpushed_branches": unpushed_branches,
@@ -200,6 +206,9 @@ def flags(r):
     """Things worth surfacing. Deliberately conservative: a dirty tree is normal
     working state, not an alarm. Only structural oddities are called out."""
     out = []
+    if r.get("status_unavailable"):
+        out.append("git status did not complete (timeout or error) - branch state UNKNOWN, not clean")
+        return out
     if not r["has_commits"]:
         out.append("EMPTY REPO (initialised, nothing committed)")
     if not r["remotes"]:
@@ -235,11 +244,13 @@ def main():
 
         unversioned = []
         if PROJECTS.exists():
-            repo_roots = {r["path"] for r in repos}
+            repo_roots = [Path(r["path"]) for r in repos]
             for d in sorted(p for p in PROJECTS.iterdir() if p.is_dir()):
                 if d.name in SKIP_DIRS or d.name in DELIBERATELY_UNVERSIONED:
                     continue
-                if not any(rp.startswith(str(d)) for rp in repo_roots):
+                # Compare paths, not string prefixes: "foo" is not versioned just
+                # because a sibling repo "foobar" exists.
+                if not any(d == rp or d in rp.parents for rp in repo_roots):
                     unversioned.append(d.name)
 
         state = {
