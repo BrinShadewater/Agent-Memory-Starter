@@ -1,0 +1,35 @@
+{
+  "project-memory": {
+    "positive": [
+      { "prompt": "start a session and get me oriented in the memory vault before I touch the project" },
+      { "prompt": "log this decision in the vault so the next session doesn't relearn it" },
+      { "prompt": "wrap up: write the journal entry and update the project note" }
+    ],
+    "negative": [
+      { "prompt": "spin up a brand new site on the house stack", "owner": "site-scaffold" },
+      { "prompt": "audit my skills for staleness and bloat", "owner": "skill-maintenance" }
+    ]
+  },
+  "site-scaffold": {
+    "positive": [
+      { "prompt": "spin up a new site on the house Vite React TypeScript stack with Vercel deploys" },
+      { "prompt": "scaffold a landing page project that matches the other sites" },
+      { "prompt": "bootstrap a content-driven guide site with the verify gate wired in" }
+    ],
+    "negative": [
+      { "prompt": "remember this fact about the client for later", "owner": "project-memory" },
+      { "prompt": "repackage this skill and reinstall it everywhere", "owner": "skill-maintenance" }
+    ]
+  },
+  "skill-maintenance": {
+    "positive": [
+      { "prompt": "audit my skills for staleness and bloat and tell me what to retire" },
+      { "prompt": "repackage this skill and reinstall it everywhere" },
+      { "prompt": "are any of my skill descriptions triggering on the same requests" }
+    ],
+    "negative": [
+      { "prompt": "close out the session and write the journal", "owner": "project-memory" },
+      { "prompt": "set up another web project from the template", "owner": "site-scaffold" }
+    ]
+  }
+}
