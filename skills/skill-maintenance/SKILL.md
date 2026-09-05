@@ -148,6 +148,8 @@ current session proves an install worked.
 | `check_scoped.py` | Flags skills making single-runtime claims without naming the other case. Word-boundary matching. |
 | `scan_skills.py` | **Locator, not a health metric.** Finds which packages mention which patterns. Tells you where to look, not whether anything is wrong. |
 | `show_hits.py` | Prints the matching lines from `scan_skills.py` hits, for triage. |
+| `trigger_evals.py` | Deterministic routing evals: positive prompts must rank their skill top-k in a TF-IDF ranking over descriptions, negatives must be won by their owner, and no two descriptions may sit above 0.75 similarity. Cases live in `evals/cases.json`; add cases whenever a description changes. Run with `--root <your skills dir>`. |
+| `smell_scan.py` | Ranks skills by patchwork density (dated corrections, `EXCEPT WHEN` clauses, repeated rules) and prints the matching lines. A density score orders candidates and cannot judge them; read the lines. `--self-test` proves the patterns still catch real patchwork and ignore topic words. |
 
 `check_scoped.py`, `scan_skills.py` and `show_hits.py` carry pattern lists marked
 **EDIT THIS FOR YOUR SETUP**. They ship with example markers; they are worthless until
