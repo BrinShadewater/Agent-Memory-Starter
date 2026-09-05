@@ -126,11 +126,40 @@ def query_tasks():
     return tasks, boot
 
 
+CACHE_MINUTES = 30
+
+
+def report(problems, stale_minutes=None):
+    if not problems:
+        return
+    when = ("computed fresh at session start" if stale_minutes is None
+            else "from the check %d min ago; the next fresh one is within %d" % (stale_minutes, CACHE_MINUTES))
+    print("UNATTENDED JOB HEALTH (%s)" % when)
+    for name, detail in problems:
+        print("- %s: %s" % (name, detail))
+    print("An exit code is not evidence either way - read the job's own output "
+          "before concluding it is fine.")
+
+
 def main():
     if os.environ.get("CLAUDE_HOOKS_SKIP"):
         return 0
     if any(p.exists() for p in PAUSE_FILES):
         return 0
+
+    # A state file fresher than CACHE_MINUTES means the scheduler query (about 2.5 s of
+    # PowerShell, the slowest hook at every session start) would only repeat itself.
+    # Reuse it: a clean prior result stays quiet, and a prior problem is reprinted so a
+    # session that starts inside the window still hears it.
+    try:
+        prior = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        checked = datetime.fromisoformat(prior["checked_at"])
+        if datetime.now(timezone.utc) - checked < timedelta(minutes=CACHE_MINUTES):
+            report([(p["task"], p["detail"]) for p in prior.get("problems", [])],
+                   stale_minutes=int((datetime.now(timezone.utc) - checked).total_seconds() // 60))
+            return 0
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
 
     if not TASK_FILTER:
         return 0          # unconfigured is not an error; do nothing rather than guess
@@ -209,12 +238,7 @@ def main():
     except OSError:
         pass
 
-    if problems:
-        print("UNATTENDED JOB HEALTH (computed fresh at session start)")
-        for name, detail in problems:
-            print("- %s: %s" % (name, detail))
-        print("An exit code is not evidence either way - read the job's own output "
-              "before concluding it is fine.")
+    report(problems)
     return 0
 
 

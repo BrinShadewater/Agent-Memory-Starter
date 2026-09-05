@@ -13,6 +13,18 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — new capability or new guidance; existing vaults keep working untouched.
 - **PATCH** — corrections and clarifications, no new behaviour.
 
+## [0.5.0] — 2026-09-05
+
+### Added
+
+- `hooks/task-health.py` reuses its last result when it is under 30 minutes old instead of
+  querying Task Scheduler again. The query is about two seconds of PowerShell and was the
+  slowest hook at every session start, and a session that opens three times in an hour was
+  paying it three times for the same answer. A stored problem is reprinted, with its age, so
+  a session that starts inside the window still hears it; a clean prior result stays quiet.
+  The state file it already wrote is the cache, so there is nothing new to configure. Why: a
+  slow SessionStart hook is the kind that gets disabled, and then the alarm is gone.
+
 ## [0.4.1] — 2026-09-04
 
 ### Fixed
