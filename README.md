@@ -47,7 +47,7 @@ deliberately left out and why.
 | `git-sweep.py` | `SessionStart` | Computes real repo state fresh each session. Handles the five traps that make a naive check confidently wrong. Silent when healthy. |
 | `post-compact-reorient.py` | `SessionStart(compact)` | Re-orients after context compaction, with named anchors rather than generic advice. |
 | `log-skill-usage.py` | `PostToolUse(Skill)` | One JSONL line per skill invocation, so skill audits rest on data instead of impression. |
-| `task-health.py` | `SessionStart` | Surfaces scheduled jobs that failed or stopped firing. An alarm nobody reads is the same shape as the problem it was built to catch. Windows Task Scheduler; read-only. |
+| `task-health.py` | `SessionStart` | Surfaces scheduled jobs that failed or stopped firing. An alarm nobody reads is the same shape as the problem it was built to catch. Windows Task Scheduler; read-only. Reuses a result under 30 minutes old rather than querying again. |
 
 `post-compact-reorient.py` is registered under **`SessionStart` with `matcher: "compact"`,
 not `PostCompact`.** `PostCompact` fires after compaction but cannot inject text into the
