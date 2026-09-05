@@ -148,7 +148,12 @@ def main():
         result = t.get("Result")
         last_raw = t.get("Last") or ""
 
-        if isinstance(result, int) and result != 0:
+        # Task Scheduler reports states through LastTaskResult too, and they are
+        # non-zero without being failures: 0x41301 running right now, 0x41302
+        # disabled, 0x41303 never run, 0x41304 no more runs, 0x41305 not yet started.
+        # A job that happens to be mid-run at session start is not a broken job.
+        informational = {0x41301, 0x41302, 0x41303, 0x41304, 0x41305}
+        if isinstance(result, int) and result != 0 and result not in informational:
             hint = LOG_HINTS.get(name, "")
             msg = "exited %d on its last run" % result
             if hint:
