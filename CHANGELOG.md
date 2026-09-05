@@ -13,6 +13,24 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — new capability or new guidance; existing vaults keep working untouched.
 - **PATCH** — corrections and clarifications, no new behaviour.
 
+## [0.4.1] — 2026-09-04
+
+### Fixed
+
+- `hooks/git-sweep.py`: a folder was reported versioned whenever any repo path started with
+  its string (`foo` beside a repo `foobar`); paths are compared now. A timed-out `git status`
+  read as "no branch, no upstream, clean" and produced a false "no upstream tracking" flag;
+  it now reads as UNKNOWN and says so. Why: both are confident false findings, the class this
+  kit exists to prevent. (#5)
+- `hooks/task-health.py`: Task Scheduler's informational results (0x41301 running, 0x41302
+  disabled, 0x41303 never run, 0x41304 no more runs, 0x41305 not yet started) were reported
+  as failures; a job mid-run at session start is not a broken job. (#5)
+
+### Changed
+
+- README: the H1 said "Kit", the private twin's name (#3). CI runs `compileall`, the
+  export-safety check and the vault lint on every pull request (#4).
+
 ## [0.4.0] — 2026-08-06
 
 ### Added
