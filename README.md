@@ -63,8 +63,9 @@ python hooks/install-hooks.py          # dry run, shows exactly what it would do
 python hooks/install-hooks.py --apply  # backs up settings.json first, merges additively
 ```
 
-Then set two environment variables, copy `vault/` where you want it, and **start a fresh
-session** — a running session's hooks and skills are fixed at start.
+Set `AGENT_VAULT` and `AGENT_PROJECTS`, copy `vault/` where you want it, and **start a
+fresh session**. For the Windows task-health hook, also configure `AGENT_TASK_FILTER`
+as described in the install guide. A running session's hooks and skills are fixed at start.
 
 ## ⏱️ The 10-minute version
 
