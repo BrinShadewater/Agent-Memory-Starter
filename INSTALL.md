@@ -1,6 +1,7 @@
 # Install
 
-Roughly ten minutes. Nothing here is destructive, and every step is reversible.
+Roughly ten minutes. Preview the hook installation before applying it, and keep the
+settings backup so you can review or undo the changes.
 
 ## 0. Requirements
 
@@ -33,6 +34,11 @@ export AGENT_PROJECTS="$HOME/code"      # the root the git sweep will scan
 **`AGENT_PROJECTS` is not optional if you want the git sweep to do anything.** Unset, it
 exits silently — deliberately, since an unconfigured hook should be inert rather than
 noisy, but it does mean a silent no-op is the default failure.
+
+For the Windows Task Scheduler hook, set `AGENT_TASK_FILTER` to a regex matching
+the task names you want checked, such as `Backup|Sync`. It stays inactive when unset.
+To report overdue tasks as well as failures, configure the `WATCHED` mapping in
+`hooks/task-health.py` with each task name and its expected interval in hours.
 
 ## 2. Install the hooks
 
@@ -111,9 +117,13 @@ a while. That is the intended cold start, not a fault.
 
 ## Uninstall
 
+Review the saved settings before restoring them. If you have changed Claude settings
+since installation, remove only this kit's four hook registrations from the current
+settings instead of replacing the whole file with an older backup.
+
 ```bash
 cp ~/.claude/settings.json.pre-kit-<timestamp> ~/.claude/settings.json
-rm ~/.claude/hooks/{git-sweep,post-compact-reorient,log-skill-usage}.py
+rm ~/.claude/hooks/{git-sweep,post-compact-reorient,task-health,log-skill-usage}.py
 rm -rf ~/.claude/skills/project-memory
 ```
 
@@ -122,12 +132,12 @@ The vault is just markdown files. Keep or delete them; nothing else depends on t
 ## Pausing without uninstalling
 
 ```bash
-touch ~/.claude/automation.paused      # stops all three hooks
+touch ~/.claude/automation.paused      # stops all four hooks
 rm ~/.claude/automation.paused         # resumes
 ```
 
 Per-hook: `automation-gitsweep.paused`, `automation-reorient.paused`,
-`automation-telemetry.paused`.
+`automation-telemetry.paused`, `automation-taskhealth.paused`.
 
 Set `CLAUDE_HOOKS_SKIP=1` before launching any nested or headless agent run, or a hook's
 output gets captured as that subprocess's answer.

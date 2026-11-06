@@ -13,6 +13,15 @@ Versions are `MAJOR.MINOR.PATCH`:
 - **MINOR** — new capability or new guidance; existing vaults keep working untouched.
 - **PATCH** — corrections and clarifications, no new behaviour.
 
+## [Unreleased]
+
+### Fixed
+
+- Document configuration, pause and uninstall for all four installed hooks, including
+  task-health. The old instructions left that hook behind during uninstall.
+- Explain that restoring old settings can discard later changes, so users can remove
+  only the kit registrations when they need to preserve newer settings.
+
 ## [0.5.0] — 2026-09-05
 
 ### Added
